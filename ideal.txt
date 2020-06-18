@@ -27,3 +27,13 @@ cv2.line(img, ptStart, ptEnd, point_color, thickness, lineType)
 PIL:
 draw = ImageDraw.Draw(im) # 实例化一个对象
 draw.line((0, 0) + im.size, fill=128, width=5)  # 线的起点和终点，线宽
+
+取整除法://
+
+关于坐标:
+图片:左上角为(0,0),右下角为(m,n)
+字体:字体左下角为(0,0)
+
+像素设置:
+对原图的长宽做调整
+理想是对指定坐标进行裁剪
