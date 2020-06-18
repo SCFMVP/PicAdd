@@ -22,7 +22,7 @@ cv2.createTrackbar('minVal', 'Canny', 0, 255, nothing)
 cv2.createTrackbar('maxVal', 'Canny', 0, 255, nothing)
 
 # tip: some path questions
-img = cv2.imread('Test.png', 0)
+img = cv2.imread('qq.png', 0)
 
 # 高斯滤波去噪
 img = cv2.GaussianBlur(img, (3, 3), 0)

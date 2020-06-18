@@ -19,7 +19,7 @@ from skimage import measure, draw
 # img[rr, cc] = 1
 # img[rr1, cc1] = 1
 
-img = cv2.imread('key.jpg', 0)
+img = cv2.imread('qq.png', 0)
 # 检测所有图形的轮廓
 contours = measure.find_contours(img, 0.5)
 

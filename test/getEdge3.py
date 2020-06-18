@@ -11,9 +11,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from skimage import measure, draw
 
-
-
-img = cv2.imread('Test.png', cv2.IMREAD_GRAYSCALE)
+img = cv2.imread('qq.png', cv2.IMREAD_GRAYSCALE)
 # Sobel算子
 sobelx = cv2.Sobel(img, cv2.CV_64F, 1, 0)
 sobely = cv2.Sobel(img, cv2.CV_64F, 0, 1)

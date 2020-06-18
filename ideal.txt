@@ -1,0 +1,29 @@
+====最好选用CV2====
+1.轮廓提取
+    需要包含基本的去噪步骤
+    提取最外围的轮廓,有的情况需要提取次外围的轮廓情况(getEdge3里的candy算子直观感觉最好)
+
+2.图像裁剪/画网格/填充文字
+    裁剪根据提取到的轮廓信息,采用与的方式
+    网格大小可调节,判定可填充字符网格
+    文字按顺序填充即可
+
+3.GUI的设计
+    QT设计
+    其它GUI库
+
+4.知识点
+
+打开图片:
+cv2:
+img = cv2.imread('qq.png', 0)
+PIL:
+from PIL import Image,ImageDraw
+im = Image.open('qq.png')
+
+画线:
+cv2:
+cv2.line(img, ptStart, ptEnd, point_color, thickness, lineType)
+PIL:
+draw = ImageDraw.Draw(im) # 实例化一个对象
+draw.line((0, 0) + im.size, fill=128, width=5)  # 线的起点和终点，线宽
