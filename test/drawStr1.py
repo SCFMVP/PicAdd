@@ -39,7 +39,7 @@ for i in range(width//strSize):
 #  添加文字: https://blog.csdn.net/sinat_29957455/article/details/88071078
 #  cv2.putText(图像,需要添加字符串,需要绘制的坐标,字体类型,字号,字体颜色,字体粗细)
 cv2.putText(canny, "WMNHQ Hello World", (0, 44), cv2.FONT_HERSHEY_SIMPLEX, 0.25, (255, 0, 0), 0, cv2.LINE_AA)
-# todo: 对应字号和像素之间的关系
+# todo: 对应字号和像素之间的关系,或者简化成三组对应供选择
 """
 5*5像素划分的小格子
 2个小格子对应一个0.5号字体

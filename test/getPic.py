@@ -3,7 +3,7 @@ import numpy as np
 
 # 两种图片读取方式:绝对路径,相对路径
 # img = cv2.imread('E:\PycharmProjects\PicAdd\\test\key.jpg', 0)
-img = cv2.imread('Test.png')  # 尾部加0则显示黑白
+img = cv2.imread('wx.png')  # 尾部加0则显示黑白
 
 # 显示图像尺寸信息
 sp = img.shape
