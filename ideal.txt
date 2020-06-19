@@ -37,3 +37,12 @@ draw.line((0, 0) + im.size, fill=128, width=5)  # 线的起点和终点，线宽
 像素设置:
 对原图的长宽做调整
 理想是对指定坐标进行裁剪
+
+tk使用步骤:(类Java)
+设置窗体布局--->写回调事件
+放置控件:
+b = tk.Button(window, text='hit me', font=('Arial', 12), width=10, height=1, command=hit_me)
+b.pack()
+回调事件:
+def hit_me():
+    ...
