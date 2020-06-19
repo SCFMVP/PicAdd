@@ -19,7 +19,7 @@ sp = img.shape
 print(sp)
 height = sp[0]
 width = sp[1]
-print(' width: %d \n height: %d \n' % (width, height))
+print(' width: %d pt\n height: %d pt\n' % (width, height))
 # Candy算子做边缘检测
 """
 cv2.Canny(image,            # 输入原图（必须为单通道图）
@@ -38,24 +38,32 @@ for i in range(height):  # 左侧
         if canny[i, j] == 255:
             img_out[i, j] = 255
             break  # 跳出内层循环
+        else:
+            img_out[i, j] = 255
 cv2.imshow('img_out', img_out)
 for i in range(width):  # 上侧
     for j in range(height):
         if canny[j, i] == 255:
             img_out[j, i] = 255
             break  # 跳出内层循环
+        else:
+            img_out[j, i] = 255
 cv2.imshow('img_out', img_out)
 for i in range(height):  # 右侧
     for j in range(width):
         if canny[i, width-j-1] == 255:
             img_out[i, width-j-1] = 255
             break  # 跳出内层循环
+        else:
+            img_out[i, width-j-1] = 255
 cv2.imshow('img_out', img_out)
 for i in range(width):  # 下侧
     for j in range(height):
         if canny[height-1-j, i] == 255:
             img_out[height-1-j, i] = 255
             break  # 跳出内层循环
+        else:
+            img_out[height-1-j, i] = 255
 cv2.imshow('img_out', img_out)
 
 # 绘图操作
@@ -82,6 +90,37 @@ hangID = height // 5
 lieID = wight // 5
 ( hangID * 5 - 1 , lieID * 5 - 1 )
 '''
+# 二值图像 (0=黑色,255=白色)
+isWhite = 0
+hangID = []
+lieID = []
+p = 0
+for i in range(height//strSize):
+    for j in range(width//strSize):   # 遍历 i * j 个小格
+        isWhite = 0
+        for m in range(strSize):
+            for n in range(strSize):  # 遍历小格内 m * n 个像素
+                if img_out[m+i*strSize, n+strSize*j] == 255:   # 检测到白色像素则标记为无线方格并跳出循环
+                    isWhite = 1
+                    break
+                if isWhite != 1 and m == strSize - 1 and n == strSize - 1:
+                    hangID.append(m + i * strSize)    # 此处为方格左下角坐标, 只能使用append!
+                    lieID.append(strSize * j)
+                    # hangID[p] = m + i * strSize    # 此处为方格左下角坐标
+                    # lieID[p] = strSize * j
+                    # p += 1
+            if isWhite == 1:
+                break
+print(hangID)
+print(lieID)
+print('可用方格数: ' + str(len(hangID)))
+
+# 在可用方格内添加字符
+for i in range(len(hangID)):
+    cv2.putText(img_out, "o", (hangID[i], lieID[i]), cv2.FONT_HERSHEY_SIMPLEX, 0.25, (255, 0, 0), 0, cv2.LINE_AA)
+cv2.imshow('img_out', img_out)
+
+
 
 
 #  添加文字: https://blog.csdn.net/sinat_29957455/article/details/88071078

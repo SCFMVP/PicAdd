@@ -9,7 +9,7 @@
     文字按顺序填充即可
 
 3.GUI的设计
-    QT设计
+    PyQt5/Tkinter
     其它GUI库
 
 4.知识点
