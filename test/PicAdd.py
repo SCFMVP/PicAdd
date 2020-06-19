@@ -14,6 +14,8 @@ import copy
 
 # 读取图片
 img = cv2.imread('wx.png', cv2.IMREAD_GRAYSCALE)
+# 高斯滤波去噪
+# img = cv2.GaussianBlur(img, (3, 3), 0)
 # 显示图像尺寸信息
 sp = img.shape
 print(sp)
@@ -29,6 +31,16 @@ cv2.Canny(image,            # 输入原图（必须为单通道图）
 """
 # todo:边缘检测时后续操作的关键,可继续优化
 canny = cv2.Canny(img, 50, 100)  # 已经是二值图像了,但是此处是0和255
+cv2.imshow('1 canny', canny)
+# sobelx = cv2.Sobel(img, cv2.CV_64F, 1, 0)
+# sobely = cv2.Sobel(img, cv2.CV_64F, 0, 1)
+# sobelx = cv2.convertScaleAbs(sobelx)
+# sobely = cv2.convertScaleAbs(sobely)
+# canny = cv2.addWeighted(sobelx, 0.5, sobely, 0.5, 0) # x+y=xy
+# cv2.imshow('1 canny', canny)
+# ret, canny = cv2.threshold(canny, 127, 255, cv2.THRESH_BINARY)
+# print("阈值：", ret)
+# cv2.imshow("binary", canny)
 # 空模板
 img_out = np.zeros(img.shape, np.uint8)
 # 提取最外侧轮廓线(0=黑色,255=白色)
@@ -40,7 +52,7 @@ for i in range(height):  # 左侧
             break  # 跳出内层循环
         else:
             img_out[i, j] = 255
-cv2.imshow('img_out', img_out)
+# cv2.imshow('left', img_out)
 for i in range(width):  # 上侧
     for j in range(height):
         if canny[j, i] == 255:
@@ -48,7 +60,7 @@ for i in range(width):  # 上侧
             break  # 跳出内层循环
         else:
             img_out[j, i] = 255
-cv2.imshow('img_out', img_out)
+# cv2.imshow('up', img_out)
 for i in range(height):  # 右侧
     for j in range(width):
         if canny[i, width-j-1] == 255:
@@ -56,7 +68,7 @@ for i in range(height):  # 右侧
             break  # 跳出内层循环
         else:
             img_out[i, width-j-1] = 255
-cv2.imshow('img_out', img_out)
+# cv2.imshow('right', img_out)
 for i in range(width):  # 下侧
     for j in range(height):
         if canny[height-1-j, i] == 255:
@@ -64,13 +76,13 @@ for i in range(width):  # 下侧
             break  # 跳出内层循环
         else:
             img_out[height-1-j, i] = 255
-cv2.imshow('img_out', img_out)
+# cv2.imshow('down', img_out)
 
 # 绘图操作
 point_color = (66, 66, 66)  # BGR
 thickness = 1
 lineType = 4
-strSize = 5  # 字符size: strSize*strSie
+strSize = 5  # 字符size: strSize*strSie , 数值8 是较为理想的大小
 # 绘制网格
 for i in range(height//strSize):
     lineId = i*strSize
@@ -106,6 +118,9 @@ for i in range(height//strSize):
                 if isWhite != 1 and m == strSize - 1 and n == strSize - 1:
                     hangID.append(m + i * strSize)    # 此处为方格左下角坐标, 只能使用append!
                     lieID.append(strSize * j)
+                    # todo: 可以直接在此处进行填充, 还要考虑大小问题
+                    cv2.putText(img_out, "W", (strSize * j, m + i * strSize), cv2.FONT_HERSHEY_SIMPLEX, 0.25, (66, 66, 66), 0,
+                                cv2.LINE_AA)
                     # hangID[p] = m + i * strSize    # 此处为方格左下角坐标
                     # lieID[p] = strSize * j
                     # p += 1
@@ -116,9 +131,9 @@ print(lieID)
 print('可用方格数: ' + str(len(hangID)))
 
 # 在可用方格内添加字符
-for i in range(len(hangID)):
-    cv2.putText(img_out, "o", (hangID[i], lieID[i]), cv2.FONT_HERSHEY_SIMPLEX, 0.25, (255, 0, 0), 0, cv2.LINE_AA)
-cv2.imshow('img_out', img_out)
+# for i in range(len(hangID)):
+#     cv2.putText(img_out, ".", (lieID[i], hangID[i]), cv2.FONT_HERSHEY_SIMPLEX, 0.25, (255, 0, 0), 0, cv2.LINE_AA)
+cv2.imshow('str', img_out)
 
 
 
