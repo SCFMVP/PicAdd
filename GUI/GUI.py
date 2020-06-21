@@ -36,9 +36,10 @@ def get_edge():
 
 
 def get_result():
-    global canny, img_result
+    global canny, img_result, cv_img
     '''填充白色'''
-    img_out = np.zeros(canny.shape, np.uint8)
+    img_out = np.zeros(canny.shape, np.uint8)    # 二值图像
+    img_color = np.zeros(cv_img.shape, np.uint8)  # 彩色图像
     sp = canny.shape
     height = sp[0]
     width = sp[1]
@@ -48,6 +49,7 @@ def get_result():
         for j in range(width):
             if canny[i, j] == 255:
                 img_out[i, j] = 255
+                img_color[i, j] = (255, 0, 0)
                 break  # 跳出内层循环
             else:
                 img_out[i, j] = 255
@@ -56,6 +58,7 @@ def get_result():
         for j in range(height):
             if canny[j, i] == 255:
                 img_out[j, i] = 255
+                img_color[j, i] = (255, 0, 0)
                 break  # 跳出内层循环
             else:
                 img_out[j, i] = 255
@@ -64,6 +67,7 @@ def get_result():
         for j in range(width):
             if canny[i, width - j - 1] == 255:
                 img_out[i, width - j - 1] = 255
+                img_color[i, width - j - 1] = (255, 0, 0)
                 break  # 跳出内层循环
             else:
                 img_out[i, width - j - 1] = 255
@@ -72,6 +76,7 @@ def get_result():
         for j in range(height):
             if canny[height - 1 - j, i] == 255:
                 img_out[height - 1 - j, i] = 255
+                img_color[height - 1 - j, i] = (255, 0, 0)
                 break  # 跳出内层循环
             else:
                 img_out[height - 1 - j, i] = 255
@@ -113,12 +118,13 @@ def get_result():
     print('可用字符数:', len(strData))
     for i in range(len(hangID)):
         if i >= len(strData):
-            cv2.putText(img_out, ' ', (lieID[i], hangID[i]), cv2.FONT_HERSHEY_SIMPLEX, 0.25, (255, 0, 0), 0, cv2.LINE_AA)
+            cv2.putText(img_color, ' ', (lieID[i], hangID[i]), cv2.FONT_HERSHEY_SIMPLEX, 0.25, (255, 0, 0), 0, cv2.LINE_AA)
         else:
-            cv2.putText(img_out, strData[i], (lieID[i], hangID[i]), cv2.FONT_HERSHEY_SIMPLEX, 0.25, (255, 0, 0), 0, cv2.LINE_AA)
-    cv2.imshow('str', img_out)
+            cv2.putText(img_color, strData[i], (lieID[i], hangID[i]), cv2.FONT_HERSHEY_SIMPLEX, 0.25, (255, 0, 0), 0, cv2.LINE_AA)
+    # cv2.imshow('str', img_out)
+    # cv2.imshow('str', img_color)
     # 以下用于显示
-    image = Image.fromarray(cv2.cvtColor(img_out, cv2.COLOR_BGR2RGB))
+    image = Image.fromarray(cv2.cvtColor(img_color, cv2.COLOR_BGR2RGB))
     # todo: 做个更好的resize
     image = image.resize((200, 200), Image.ANTIALIAS)
     img_result = ImageTk.PhotoImage(image)  # img_new必须使用全局变量, 否则会显示为背景色
@@ -206,14 +212,6 @@ lb6.grid(row=4, column=0)
 btn1.grid(row=4, column=1)
 btn2.grid(row=5, column=1)
 label_img3.grid(row=5, column=0)
-
-# '''label显示图片可以实现原图完整显示及更容易的更新图片,但是不支持自动缩放'''
-# img = tk.PhotoImage(file='wx.png')    # jpg显示貌似有问题
-# label_img = tk.Label(window, image=img,  bg='#696969')
-# label_img.grid(row=5, column=1, sticky=W)
-# # 更新图片
-# img = tk.PhotoImage(file='E:/PycharmProjects/PicAdd/GUI/qq.png')
-# label_img.configure(image=img)
 
 '''主窗口循环显示'''
 window.mainloop()

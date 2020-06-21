@@ -42,14 +42,55 @@ def get_edge():
     for i in range(height):  # 左侧
         for j in range(width):
             img_color[i, j] = (255, 255, 255)
-    '''非canny方法'''
-    img2 = cv2.imread(picPath)
-    gray = cv2.cvtColor(img2, cv2.COLOR_BGR2GRAY)
-    ret, binary = cv2.threshold(gray, 127, 255, cv2.THRESH_BINARY)
-    contours, hierarchy = cv2.findContours(binary, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
-    # https://blog.csdn.net/Easen_Yu/article/details/89380578
-    cv2.drawContours(img_color, contours, -1, (255, 0, 255), 1)
-    cv2.imshow("img", img_color)
+    '''# 提取最外侧轮廓线(0=黑色,255=白色)'''
+    # 四次提取四个方向-叠加
+    # todo: 判断单方向连续(这是需要保留的), 算法有缺陷
+    for i in range(height):  # 左侧
+        for j in range(width):
+            if canny[i, j] == 255:
+                img_out[i, j] = 255
+                # img_color[i, j] = (255, 0, 0)
+                # 这里坐标与上面的不一致的
+                cv2.putText(img_color, '*', (j, i), cv2.FONT_HERSHEY_SIMPLEX, 0.25, (255, 0, 0), 0, 5)
+                print(i)
+                break
+                # if canny[i, j+1] != 255:
+                #     break  # 跳出内层循环
+            else:
+                img_out[i, j] = 255
+    # cv2.imshow('left', img_out)
+    for i in range(width):  # 上侧
+        for j in range(height):
+            if canny[j, i] == 255:
+                img_out[j, i] = 255
+                # img_color[j, i] = (255, 0, 0)
+                cv2.putText(img_color, '*', (i, j), cv2.FONT_HERSHEY_SIMPLEX, 0.25, (255, 0, 0), 0, 5)
+                break  # 跳出内层循环
+            else:
+                img_out[j, i] = 255
+    # cv2.imshow('up', img_out)
+    for i in range(height):  # 右侧
+        for j in range(width):
+            if canny[i, width - j - 1] == 255:
+                img_out[i, width - j - 1] = 255
+                # img_color[i, width - j - 1] = (255, 0, 0)
+                cv2.putText(img_color, '*', (height - 1 - j, i), cv2.FONT_HERSHEY_SIMPLEX, 0.25, (255, 0, 0), 0, 5)
+                break  # 跳出内层循环
+            else:
+                img_out[i, width - j - 1] = 255
+    # cv2.imshow('right', img_out)
+    for i in range(width):  # 下侧
+        for j in range(height):
+            if canny[height - 1 - j, i] == 255:
+                img_out[height - 1 - j, i] = 255
+                # img_color[height - 1 - j, i] = (255, 0, 0)
+                cv2.putText(img_color, '*', (i, width - j - 1), cv2.FONT_HERSHEY_SIMPLEX, 0.25, (255, 0, 0), 0, 5)
+                break  # 跳出内层循环
+            else:
+                img_out[height - 1 - j, i] = 255
+    cv2.imshow('right', img_out)
+    # cv2.imshow('right', img_color)
+    # 显示边缘轮廓
     image = Image.fromarray(cv2.cvtColor(img_color, cv2.COLOR_BGR2RGB))
     # todo: 做个更好的resize
     image = image.resize((200, 200), Image.ANTIALIAS)
@@ -57,26 +98,12 @@ def get_edge():
     label_img2.configure(image=img_edge)
 
 
+
 def get_result():
     global canny, img_result, cv_img, img_out, img_color
-    '''获取可以空格使用'''
-    img2 = cv2.imread(picPath)
-    gray = cv2.cvtColor(img2, cv2.COLOR_BGR2GRAY)
-    ret, binary = cv2.threshold(gray, 127, 255, cv2.THRESH_BINARY)
-    contours, hierarchy = cv2.findContours(binary, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
-    # https://blog.csdn.net/Easen_Yu/article/details/89380578
-    cv2.drawContours(img_color, contours, -1, (0, 0, 0), -1)
-    img_out = cv2.cvtColor(img_color, cv2.COLOR_BGR2GRAY)
-    '''彩色显示用'''
-    img_final = np.zeros(cv_img.shape, np.uint8)  # 彩色图像
     sp = canny.shape
     height = sp[0]
     width = sp[1]
-    # 白底图片
-    for i in range(height):  # 左侧
-        for j in range(width):
-            img_final[i, j] = (255, 255, 255)
-    cv2.drawContours(img_final, contours, -1, (255, 0, 255), 1)
     # 绘图操作
     point_color = (66, 66, 66)  # BGR
     thickness = 1
@@ -114,20 +141,20 @@ def get_result():
     print('可用字符数:', len(strData))
     for i in range(len(hangID)):
         if i >= len(strData):
-            cv2.putText(img_final, ' ', (lieID[i], hangID[i]), cv2.FONT_HERSHEY_SIMPLEX, 0.25, (66, 66, 66), 0, cv2.LINE_AA)
+            cv2.putText(img_out, ' ', (lieID[i], hangID[i]), cv2.FONT_HERSHEY_SIMPLEX, 0.25, (66, 66, 66), 0, cv2.LINE_AA)
         else:
             data = str(strData).replace('\n', ' ')  # 去换行符
-            cv2.putText(img_final, data[i], (lieID[i], hangID[i]), cv2.FONT_HERSHEY_SIMPLEX, 0.25, (66, 66, 66), 0, cv2.LINE_AA)
+            cv2.putText(img_out, data[i], (lieID[i], hangID[i]), cv2.FONT_HERSHEY_SIMPLEX, 0.25, (66, 66, 66), 0, cv2.LINE_AA)
     # cv2.imshow('str', img_out)
     # cv2.imshow('str', img_color)
     # 以下用于显示
-    image = Image.fromarray(cv2.cvtColor(img_final, cv2.COLOR_BGR2RGB))
+    image = Image.fromarray(cv2.cvtColor(img_color, cv2.COLOR_BGR2RGB))
     # todo: 做个更好的resize
     image = image.resize((200, 200), Image.ANTIALIAS)
     img_result = ImageTk.PhotoImage(image)  # img_new必须使用全局变量, 否则会显示为背景色
     # todo: 越描越黑问题
     label_img3.configure(image=img_result)
-    cv2.imwrite('1.png', img_final)
+    cv2.imwrite('1.png', img_color)
 
 
 def get_picPath(event):
